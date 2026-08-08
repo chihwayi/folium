@@ -24,6 +24,8 @@ import {
   users,
 } from "@/db/schema";
 import { requireAdmin, requireOwner } from "@/lib/auth/admin";
+import { sendStaffInviteEmail } from "@/lib/email/staff-invite";
+import { getStorefrontUrl } from "@/lib/payments/stripe";
 
 const uuid = z.uuid();
 const bookSchema = z.object({
@@ -348,7 +350,15 @@ export async function inviteStaff(formData: FormData) {
       invitedById: actor.id,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
-  // Sprint 1 owns the acceptance route and email delivery; only the hash is persisted here.
+  const acceptUrl = `${getStorefrontUrl()}/accept-invite?token=${token}`;
+  try {
+    await sendStaffInviteEmail(input.email.toLowerCase(), input.role, acceptUrl);
+  } catch (error) {
+    // The invitation record (and its accept link) is the source of truth —
+    // don't fail the whole action just because delivery failed. The owner
+    // can still see the pending invitation and share the link manually.
+    console.error("Failed to send staff invitation email", error);
+  }
   revalidatePath("/admin/staff");
 }
 

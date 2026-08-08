@@ -1,4 +1,4 @@
-import { and, desc, inArray, lte, sql } from "drizzle-orm";
+import { and, desc, gte, inArray, lte, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { books, inventory, orderItems, orders } from "@/db/schema";
@@ -30,7 +30,7 @@ export default async function AdminPage() {
       .where(
         and(
           inArray(orders.status, completedStatuses),
-          sql`${orders.paidAt} >= ${since}`,
+          gte(orders.paidAt, since),
         ),
       )
       .groupBy(sql`date_trunc('day', ${orders.paidAt})`)

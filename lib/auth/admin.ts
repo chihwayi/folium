@@ -2,16 +2,24 @@ import "server-only";
 
 import { redirect } from "next/navigation";
 
+import { auth } from "@/auth";
+
 export type AdminActor = { id: string; role: "staff" | "owner" };
 
-/** Sprint 1 replaces this deny-by-default adapter with its Auth.js session lookup. */
+// Middleware (proxy.ts) gates /admin/* at the edge, but Server Actions and
+// route handlers under /admin must call this too — middleware can be
+// misconfigured or bypassed for a specific action, so each privileged
+// mutation re-checks role server-side (defense in depth).
 export async function getAdminActor(): Promise<AdminActor | null> {
-  return null;
+  const session = await auth();
+  if (!session?.user) return null;
+  if (session.user.role !== "staff" && session.user.role !== "owner") return null;
+  return { id: session.user.id, role: session.user.role };
 }
 
 export async function requireAdmin() {
   const actor = await getAdminActor();
-  if (!actor) redirect("/login?callbackUrl=/admin");
+  if (!actor) redirect("/sign-in?callbackUrl=/admin");
   return actor;
 }
 

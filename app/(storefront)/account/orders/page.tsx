@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function OrdersPage() {
   const userId = await getCurrentUserId();
-  if (!userId) redirect("/login?callbackUrl=/account/orders");
+  if (!userId) redirect("/sign-in?callbackUrl=/account/orders");
 
   const orders = await getOrdersForUser(userId);
 

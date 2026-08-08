@@ -17,7 +17,7 @@ const reviewSchema = z.object({
 export async function submitReview(formData: FormData) {
   const input = reviewSchema.parse(Object.fromEntries(formData));
   const userId = await getCurrentUserId();
-  if (!userId) redirect(`/login?callbackUrl=/books/${input.slug}`);
+  if (!userId) redirect(`/sign-in?callbackUrl=/books/${input.slug}`);
   await db
     .insert(reviews)
     .values({
@@ -47,7 +47,7 @@ const wishlistSchema = z.object({
 export async function toggleWishlist(formData: FormData) {
   const userId = await getCurrentUserId();
   const input = wishlistSchema.parse(Object.fromEntries(formData));
-  if (!userId) redirect(`/login?callbackUrl=/books/${input.slug}`);
+  if (!userId) redirect(`/sign-in?callbackUrl=/books/${input.slug}`);
   const existing = await db
     .select({ id: wishlists.id })
     .from(wishlists)
