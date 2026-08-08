@@ -1,0 +1,17 @@
+# Secrets / server access — never commit
+server-properties.txt
+.env
+.env.*
+!.env.example
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Misc
+.DS_Store
+*.log
+.vercel
