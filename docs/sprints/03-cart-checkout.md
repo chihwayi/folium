@@ -12,13 +12,14 @@ End-to-end purchase flow: add to cart through paid order.
 - Order history in customer account area
 
 ## Tasks
-- [ ] Cart state (add/remove/update qty), cart drawer UI
-- [ ] Checkout page: shipping address, order summary
-- [ ] Stripe integration: create PaymentIntent/Checkout Session
-- [ ] Webhook handler: verify signature, create `order` + `order_items`, decrement
+- [x] Cart state (add/remove/update qty), cart drawer UI
+- [x] Checkout page: shipping address, order summary
+- [x] Stripe integration: create PaymentIntent/Checkout Session
+- [x] Webhook handler: verify signature, create `order` + `order_items`, decrement
       inventory
-- [ ] Order confirmation email
-- [ ] "My Orders" page with status
+- [x] Order confirmation email
+- [ ] "My Orders" page with status (UI and query are ready; wire the Sprint 1 Auth.js
+      session into `lib/cart/current-user.ts` after that branch lands)
 
 ## Definition of Done
 A test purchase (Stripe test mode) goes from cart → payment → order recorded in DB →
