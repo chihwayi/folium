@@ -43,6 +43,13 @@
       "when": 1786220876482,
       "tag": "0005_sturdy_silver_centurion",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786229995144,
+      "tag": "0006_tranquil_dagger",
+      "breakpoints": true
     }
   ]
 }
