@@ -1,9 +1,12 @@
-import { BookOpen, ShoppingBag } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import Link from "next/link";
 
+import { CartDrawer } from "@/components/cart-drawer";
 import { SearchBar } from "@/components/search-bar";
+import { getCart } from "@/lib/cart/service";
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const cart = await getCart();
   return (
     <header className="sticky top-0 z-40 border-b border-border/70 bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -13,11 +16,10 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-5 text-sm md:flex" aria-label="Primary navigation">
           <Link href="/books" className="hover:text-primary">Books</Link>
           <Link href="/categories" className="hover:text-primary">Collections</Link>
+          <Link href="/account/orders" className="hover:text-primary">Orders</Link>
         </nav>
         <div className="ml-auto w-full max-w-md"><SearchBar /></div>
-        <span className="hidden items-center gap-2 text-sm text-muted-foreground sm:flex">
-          <ShoppingBag className="size-4" aria-hidden="true" /> Cart
-        </span>
+        <CartDrawer items={cart} />
       </div>
     </header>
   );
