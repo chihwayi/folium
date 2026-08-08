@@ -33,7 +33,7 @@ export async function syncBookToSearch(book: Book) {
     publishedAt: book.publishedAt?.toISOString() ?? null,
     createdAt: book.createdAt.toISOString(),
     updatedAt: book.updatedAt.toISOString(),
-  }]);
+  }], { primaryKey: "id" });
 }
 
 export async function reindexCatalog() {
@@ -55,7 +55,7 @@ export async function reindexCatalog() {
     publishedAt: book.publishedAt?.toISOString() ?? null,
     createdAt: book.createdAt.toISOString(),
     updatedAt: book.updatedAt.toISOString(),
-  })));
+  })), { primaryKey: "id" });
 }
 
 export async function removeBookFromSearch(bookId: string) {

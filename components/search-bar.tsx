@@ -21,10 +21,12 @@ export function SearchBar() {
     if (query.trim().length < 2) return;
     const controller = new AbortController();
     const timer = window.setTimeout(async () => {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: controller.signal });
-      if (response.ok) {
-        const data = (await response.json()) as { hits: Hit[] };
+      try {
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+        const data = response.ok ? ((await response.json()) as { hits: Hit[] }) : { hits: [] };
         setHits(data.hits); setOpen(true); setActive(-1);
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") { setHits([]); setOpen(true); setActive(-1); }
       }
     }, 220);
     return () => { window.clearTimeout(timer); controller.abort(); };

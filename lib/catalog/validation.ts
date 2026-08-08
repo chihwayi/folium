@@ -3,7 +3,15 @@ import { z } from "zod";
 const firstValue = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value;
 
-const optionalText = z.preprocess(firstValue, z.string().trim().min(1).optional());
+// Empty string means "cleared" (e.g. a <select> reset to its blank "All ..."
+// option) and must be treated the same as an absent param, not a validation
+// failure — form GET submissions include every field, even blank ones.
+const blankToUndefined = (value: string | string[] | undefined) => {
+  const text = firstValue(value);
+  return text === "" ? undefined : text;
+};
+
+const optionalText = z.preprocess(blankToUndefined, z.string().trim().min(1).optional());
 const optionalMoney = z.preprocess(
   (value) => {
     const text = firstValue(value as string | string[] | undefined);
@@ -21,7 +29,7 @@ export const catalogSearchParamsSchema = z
     category: optionalText,
     author: optionalText,
     format: z.preprocess(
-      firstValue,
+      blankToUndefined,
       z.enum(["paperback", "hardcover", "ebook"]).optional(),
     ),
     minPrice: optionalMoney,

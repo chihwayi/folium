@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, gte, ilike, lte, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, lte, sql, type SQL } from "drizzle-orm";
 import { cache } from "react";
 
 import { db } from "@/db";
@@ -48,10 +48,16 @@ function toCatalogBook(row: CatalogRow): CatalogBook {
   };
 }
 
+// Escape SQL LIKE metacharacters so a literal % or _ in user input can't
+// change the pattern's match semantics.
+function escapeLike(value: string) {
+  return value.replace(/[\\%_]/g, (char) => `\\${char}`);
+}
+
 function whereFor(filters: CatalogFilters) {
   const clauses: SQL[] = [];
   if (filters.category) clauses.push(eq(categories.slug, filters.category));
-  if (filters.author) clauses.push(ilike(books.author, `%${filters.author}%`));
+  if (filters.author) clauses.push(ilike(books.author, `%${escapeLike(filters.author)}%`));
   if (filters.format) clauses.push(eq(books.format, filters.format));
   if (filters.minPrice !== undefined) clauses.push(gte(books.priceCents, filters.minPrice));
   if (filters.maxPrice !== undefined) clauses.push(lte(books.priceCents, filters.maxPrice));
@@ -60,7 +66,7 @@ function whereFor(filters: CatalogFilters) {
 
 function orderFor(sort: CatalogFilters["sort"]) {
   switch (sort) {
-    case "newest": return [desc(books.publishedAt), desc(books.createdAt)];
+    case "newest": return [sql`${books.publishedAt} DESC NULLS LAST`, desc(books.createdAt)];
     case "price-asc": return [asc(books.priceCents), asc(books.title)];
     case "price-desc": return [desc(books.priceCents), asc(books.title)];
     // Sales data lands in Sprint 3; curated order is the documented placeholder.
