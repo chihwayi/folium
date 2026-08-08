@@ -13,16 +13,21 @@ const checkoutSchema = z.object({
   promoCode: z.string().max(32).optional(),
 });
 
-export async function createCheckoutSession(formData: FormData) {
-  const { email, promoCode } = checkoutSchema.parse(
-    Object.fromEntries(formData),
-  );
+export type CheckoutState = { error: string } | null;
+
+export async function createCheckoutSession(
+  _prevState: CheckoutState,
+  formData: FormData,
+): Promise<CheckoutState> {
+  const parsed = checkoutSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: "Enter a valid email address" };
+  const { email, promoCode } = parsed.data;
   const cart = await getCart();
   if (cart.length === 0) redirect("/cart");
 
   const unavailable = cart.find((item) => item.quantity > item.stockQuantity);
   if (unavailable)
-    throw new Error(`${unavailable.title} no longer has enough stock`);
+    return { error: `${unavailable.title} no longer has enough stock` };
 
   const userId = await getCurrentUserId();
   const origin = getStorefrontUrl();
@@ -30,7 +35,12 @@ export async function createCheckoutSession(formData: FormData) {
     (sum, item) => sum + item.priceCents * item.quantity,
     0,
   );
-  const discount = await validatePromoCode(promoCode, subtotalCents);
+  let discount;
+  try {
+    discount = await validatePromoCode(promoCode, subtotalCents);
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "That promo code can't be applied" };
+  }
   const stripe = getStripeClient();
   const coupon = discount
     ? await stripe.coupons.create({

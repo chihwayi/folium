@@ -2,9 +2,8 @@ import { LockKeyhole, MapPin } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { createCheckoutSession } from "./actions";
+import { CheckoutForm } from "./_components/checkout-form";
 import { BookCover } from "@/components/book-cover";
-import { Button } from "@/components/ui/button";
 import { getCart } from "@/lib/cart/service";
 import { formatPrice } from "@/lib/catalog/format";
 
@@ -56,40 +55,7 @@ export default async function CheckoutPage({
               </p>
             </div>
           </div>
-          <form action={createCheckoutSession} className="mt-7">
-            <label htmlFor="email" className="text-sm font-medium">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autoComplete="email"
-              placeholder="reader@example.com"
-              className="mt-2 h-11 w-full rounded-md border bg-background px-3 outline-none focus:ring-2 focus:ring-ring"
-            />
-            <label
-              htmlFor="promoCode"
-              className="mt-5 block text-sm font-medium"
-            >
-              Promo code{" "}
-              <span className="font-normal text-muted-foreground">
-                (optional)
-              </span>
-            </label>
-            <input
-              id="promoCode"
-              name="promoCode"
-              autoComplete="off"
-              maxLength={32}
-              placeholder="READMORE"
-              className="mt-2 h-11 w-full rounded-md border bg-background px-3 uppercase outline-none focus:ring-2 focus:ring-ring"
-            />
-            <Button size="lg" className="mt-5 w-full">
-              <LockKeyhole /> Continue to secure payment
-            </Button>
-          </form>
+          <CheckoutForm />
           <p className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <LockKeyhole className="size-3.5" /> Payment details are handled by
             Stripe and never touch Folium’s servers.
