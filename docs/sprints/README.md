@@ -15,7 +15,7 @@ Meilisearch).
 |---|---|---|---|
 | 0 | [Foundation](./00-foundation.md) | Claude | Done |
 | 1 | [Auth & RBAC](./01-auth-rbac.md) | Claude | Not started |
-| 2 | [Catalog & Storefront](./02-catalog-storefront.md) | Codex | Not started |
+| 2 | [Catalog & Storefront](./02-catalog-storefront.md) | Codex | In progress |
 | 3 | [Cart & Checkout](./03-cart-checkout.md) | Codex | Not started |
 | 4 | [Admin Back Office](./04-admin-backoffice.md) | Codex | Not started |
 | 5 | [Editorial & UX Polish](./05-editorial-ux-polish.md) | Codex | Not started |

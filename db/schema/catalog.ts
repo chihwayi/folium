@@ -27,6 +27,7 @@ export const books = pgTable(
     slug: text("slug").notNull().unique(),
     author: text("author").notNull(),
     description: text("description"),
+    sampleExcerpt: text("sample_excerpt"),
     priceCents: integer("price_cents").notNull(),
     categoryId: uuid("category_id")
       .notNull()
@@ -35,6 +36,7 @@ export const books = pgTable(
     isbn: text("isbn"),
     format: bookFormat("format").notNull().default("paperback"),
     publishedAt: timestamp("published_at", { withTimezone: true }),
+    curatedPosition: integer("curated_position").notNull().default(0),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
   },

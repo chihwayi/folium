@@ -1,0 +1,3 @@
+"use client";
+import { Button } from "@/components/ui/button";
+export default function ErrorPage({ reset }: { error: Error & { digest?: string }; reset: () => void }) { return <main className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center"><p className="text-xs tracking-widest text-destructive uppercase">The shelf is unavailable</p><h1 className="mt-3 font-serif text-4xl">Something interrupted your browsing.</h1><p className="mt-4 max-w-md text-muted-foreground">Please try again. If the problem continues, our booksellers are probably already rearranging things.</p><Button className="mt-7" onClick={reset}>Try again</Button></main>; }
