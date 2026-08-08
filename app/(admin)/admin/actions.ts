@@ -119,9 +119,7 @@ export async function deleteCategory(formData: FormData) {
   revalidatePath("/admin/categories");
 }
 
-const csvRowSchema = bookSchema
-  .omit({ id: true, coverImageUrl: true })
-  .extend({ coverImageUrl: z.string().optional() });
+const csvRowSchema = bookSchema.omit({ id: true });
 function parseCsv(source: string) {
   const rows: string[][] = [];
   let row: string[] = [];

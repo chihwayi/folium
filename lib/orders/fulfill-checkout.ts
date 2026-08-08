@@ -99,63 +99,83 @@ export async function fulfillCheckout(sessionId: string) {
       ? session.payment_intent
       : (session.payment_intent?.id ?? null);
 
-  const orderId = await db.transaction(async (tx) => {
-    const orderValues: typeof orders.$inferInsert = {
-      userId: userIdResult?.success ? userIdResult.data : null,
-      status: "paid",
-      totalCents: amountTotal,
-      discountCents,
-      promoCodeId: promoResult?.success ? promoResult.data.promoCodeId : null,
-      customerEmail: email,
-      shippingName: shipping.name,
-      shippingAddressLine1: address.line1,
-      shippingAddressLine2: address.line2,
-      shippingCity: address.city,
-      shippingState: address.state,
-      shippingPostalCode: address.postal_code,
-      shippingCountry: address.country,
-      stripeCheckoutSessionId: session.id,
-      stripePaymentIntentId: paymentIntent,
-      paidAt: new Date(),
-    };
-    const [order] = await tx
-      .insert(orders)
-      .values(orderValues)
-      .returning({ id: orders.id });
+  let orderId: string;
+  try {
+    orderId = await db.transaction(async (tx) => {
+      const orderValues: typeof orders.$inferInsert = {
+        userId: userIdResult?.success ? userIdResult.data : null,
+        status: "paid",
+        totalCents: amountTotal,
+        discountCents,
+        promoCodeId: promoResult?.success ? promoResult.data.promoCodeId : null,
+        customerEmail: email,
+        shippingName: shipping.name,
+        shippingAddressLine1: address.line1,
+        shippingAddressLine2: address.line2,
+        shippingCity: address.city,
+        shippingState: address.state,
+        shippingPostalCode: address.postal_code,
+        shippingCountry: address.country,
+        stripeCheckoutSessionId: session.id,
+        stripePaymentIntentId: paymentIntent,
+        paidAt: new Date(),
+      };
+      const [order] = await tx
+        .insert(orders)
+        .values(orderValues)
+        .returning({ id: orders.id });
 
-    if (promoResult?.success) {
+      if (promoResult?.success) {
+        await tx
+          .update(promoCodes)
+          .set({
+            usageCount: sql`${promoCodes.usageCount} + 1`,
+            updatedAt: new Date(),
+          })
+          .where(eq(promoCodes.id, promoResult.data.promoCodeId));
+      }
+
+      for (const line of lines) {
+        const [updated] = await tx
+          .update(inventory)
+          .set({
+            stockQuantity: sql`${inventory.stockQuantity} - ${line.quantity}`,
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(inventory.bookId, line.bookId),
+              gte(inventory.stockQuantity, line.quantity),
+            ),
+          )
+          .returning({ id: inventory.id });
+        if (!updated)
+          throw new Error(`Insufficient inventory for book ${line.bookId}`);
+      }
+
       await tx
-        .update(promoCodes)
-        .set({
-          usageCount: sql`${promoCodes.usageCount} + 1`,
-          updatedAt: new Date(),
-        })
-        .where(eq(promoCodes.id, promoResult.data.promoCodeId));
+        .insert(orderItems)
+        .values(lines.map((line) => ({ orderId: order.id, ...line })));
+      return order.id;
+    });
+  } catch (error) {
+    // Webhook delivery and the checkout-success redirect can both call
+    // fulfillCheckout for the same session before either's insert commits.
+    // The unique index on stripe_checkout_session_id is the real guard —
+    // treat its violation as "already fulfilled by the other caller."
+    if (error instanceof Error && "code" in error && error.code === "23505") {
+      const [order] = await db
+        .select({ id: orders.id })
+        .from(orders)
+        .where(eq(orders.stripeCheckoutSessionId, sessionId))
+        .limit(1);
+      if (order) {
+        await sendOrderConfirmation(order.id);
+        return order.id;
+      }
     }
-
-    for (const line of lines) {
-      const [updated] = await tx
-        .update(inventory)
-        .set({
-          stockQuantity: sql`${inventory.stockQuantity} - ${line.quantity}`,
-          updatedAt: new Date(),
-        })
-        .where(
-          and(
-            eq(inventory.bookId, line.bookId),
-            gte(inventory.stockQuantity, line.quantity),
-          ),
-        )
-        .returning({ id: inventory.id });
-      if (!updated)
-        throw new Error(`Insufficient inventory for book ${line.bookId}`);
-    }
-
-    await tx
-      .insert(orderItems)
-      .values(lines.map((line) => ({ orderId: order.id, ...line })));
-    return order.id;
-  });
+    throw error;
+  }
 
   await sendOrderConfirmation(orderId);
   return orderId;

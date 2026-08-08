@@ -4,6 +4,8 @@ import { archivePromoCode, savePromoCode } from "@/app/(admin)/admin/actions";
 import { db } from "@/db";
 import { promoCodes } from "@/db/schema";
 
+import { ExpiryField } from "./_components/expiry-field";
+
 function PromoForm({ promo }: { promo?: typeof promoCodes.$inferSelect }) {
   return (
     <form
@@ -41,12 +43,7 @@ function PromoForm({ promo }: { promo?: typeof promoCodes.$inferSelect }) {
         placeholder="Value"
         className="rounded-md border bg-background px-3 py-2"
       />
-      <input
-        name="expiresAt"
-        type="datetime-local"
-        defaultValue={promo?.expiresAt?.toISOString().slice(0, 16)}
-        className="rounded-md border bg-background px-3 py-2"
-      />
+      <ExpiryField defaultValueUtcIso={promo?.expiresAt?.toISOString()} />
       <input
         name="usageLimit"
         type="number"
