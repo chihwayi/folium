@@ -29,6 +29,13 @@
       "when": 1786219974221,
       "tag": "0003_dry_stingray",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786220373092,
+      "tag": "0004_magical_stark_industries",
+      "breakpoints": true
     }
   ]
 }

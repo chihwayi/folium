@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import { BookCover } from "@/components/book-cover";
 import { formatBookFormat, formatPrice } from "@/lib/catalog/format";
-import type { CatalogBook } from "@/lib/catalog/types";
+import type { BookCardBook } from "@/lib/catalog/types";
 
-export function BookCard({ book }: { book: CatalogBook }) {
+export function BookCard({ book }: { book: BookCardBook }) {
   return (
     <article className="group min-w-0">
       <Link href={`/books/${book.slug}`} className="block focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">

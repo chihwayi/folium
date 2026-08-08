@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { db } from "@/db";
-import { books, categories, inventory, orders, staffInvitations, users } from "@/db/schema";
+import { books, categories, collectionBooks, collections, inventory, orders, reviews, staffInvitations, users } from "@/db/schema";
 import { requireAdmin, requireOwner } from "@/lib/auth/admin";
 
 const uuid = z.uuid();
@@ -136,4 +136,27 @@ export async function inviteStaff(formData: FormData) {
   await db.insert(staffInvitations).values({ email: input.email.toLowerCase(), role: input.role, tokenHash: createHash("sha256").update(token).digest("hex"), invitedById: actor.id, expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) });
   // Sprint 1 owns the acceptance route and email delivery; only the hash is persisted here.
   revalidatePath("/admin/staff");
+}
+
+const collectionSchema = z.object({ id: z.uuid().optional(), title: z.string().trim().min(1).max(120), slug: z.string().trim().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), eyebrow: z.string().trim().max(80).optional(), description: z.string().trim().max(500).optional(), position: z.coerce.number().int().nonnegative(), isPublished: z.string().optional() });
+export async function saveCollection(formData: FormData) {
+  await requireAdmin(); const input = collectionSchema.parse(Object.fromEntries(formData)); const values = { title: input.title, slug: input.slug, eyebrow: input.eyebrow || null, description: input.description || null, position: input.position, isPublished: input.isPublished === "on", updatedAt: new Date() };
+  if (input.id) await db.update(collections).set(values).where(eq(collections.id, input.id)); else await db.insert(collections).values(values);
+  revalidatePath("/admin/collections"); revalidatePath("/");
+}
+
+const collectionBookSchema = z.object({ collectionId: z.uuid(), bookId: z.uuid(), position: z.coerce.number().int().nonnegative() });
+export async function addCollectionBook(formData: FormData) {
+  await requireAdmin(); const input = collectionBookSchema.parse(Object.fromEntries(formData));
+  await db.insert(collectionBooks).values(input).onConflictDoUpdate({ target: [collectionBooks.collectionId, collectionBooks.bookId], set: { position: input.position, updatedAt: new Date() } });
+  revalidatePath("/admin/collections"); revalidatePath("/");
+}
+
+export async function removeCollectionBook(formData: FormData) {
+  await requireAdmin(); const id = uuid.parse(formData.get("id")); await db.delete(collectionBooks).where(eq(collectionBooks.id, id)); revalidatePath("/admin/collections"); revalidatePath("/");
+}
+
+export async function moderateReview(formData: FormData) {
+  await requireAdmin(); const input = z.object({ id: z.uuid(), approved: z.enum(["true", "false"]) }).parse(Object.fromEntries(formData));
+  await db.update(reviews).set({ isApproved: input.approved === "true", updatedAt: new Date() }).where(eq(reviews.id, input.id)); revalidatePath("/admin/reviews");
 }
