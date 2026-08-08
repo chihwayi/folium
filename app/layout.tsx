@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { MotionConfig } from "framer-motion";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,7 +30,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* Respects the OS-level prefers-reduced-motion setting for every
+            Framer Motion animation in the app, without each component
+            having to check it individually. */}
+        <MotionConfig reducedMotion="user">{children}</MotionConfig>
+      </body>
     </html>
   );
 }
