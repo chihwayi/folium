@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { BookGrid } from "@/components/book-grid";
 import { getAuthors, getCatalog, getCategories } from "@/lib/catalog/queries";
 import { catalogSearchParamsSchema } from "@/lib/catalog/validation";
-import { CatalogFiltersForm } from "./_components/catalog-filters";
-import { Pagination } from "./_components/pagination";
+import { CatalogFiltersForm } from "../_components/catalog-filters";
+import { Pagination } from "../_components/pagination";
 
 export const metadata: Metadata = { title: "Books | Folium", description: "Browse Folium's curated collection of books." };
 export const dynamic = "force-dynamic";
