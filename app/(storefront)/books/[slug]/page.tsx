@@ -5,7 +5,10 @@ import { notFound } from "next/navigation";
 
 import { BookCover } from "@/components/book-cover";
 import { BookGrid } from "@/components/book-grid";
+import { StarRatingInput } from "@/components/star-rating-input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { formatBookFormat, formatPrice } from "@/lib/catalog/format";
 import { getBookBySlug } from "@/lib/catalog/queries";
 import {
@@ -87,7 +90,7 @@ export default async function BookPage({ params }: PageProps<"/books/[slug]">) {
         </Link>
       </nav>
       <div className="mt-8 grid gap-10 md:grid-cols-[minmax(260px,420px)_1fr] lg:gap-20">
-        <BookCover src={book.coverImageUrl} title={book.title} />
+        <BookCover src={book.coverImageUrl} title={book.title} author={book.author} />
         <article className="py-2">
           <p className="text-xs font-semibold tracking-[.2em] text-primary uppercase">
             {book.category.name}
@@ -201,40 +204,30 @@ export default async function BookPage({ params }: PageProps<"/books/[slug]">) {
           </div>
           <form
             action={submitReview}
-            className="h-fit rounded-xl border bg-secondary/30 p-5"
+            className="h-fit rounded-xl border bg-secondary/30 p-6"
           >
             <input type="hidden" name="bookId" value={book.id} />
             <input type="hidden" name="slug" value={book.slug} />
             <h3 className="font-serif text-xl">Share your reading</h3>
+            <div className="mt-4">
+              <p className="text-xs font-semibold tracking-wide uppercase">Rating</p>
+              <div className="mt-2">
+                <StarRatingInput />
+              </div>
+            </div>
             <label className="mt-4 grid gap-2 text-sm">
-              Rating
-              <select
-                className="h-10 rounded-md border bg-background px-3"
-                name="rating"
-              >
-                {[5, 4, 3, 2, 1].map((rating) => (
-                  <option key={rating} value={rating}>
-                    {rating} stars
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="mt-3 grid gap-2 text-sm">
               Title
-              <input
-                className="h-10 rounded-md border bg-background px-3"
-                name="title"
-                maxLength={100}
-              />
+              <Input name="title" maxLength={100} placeholder="A quiet triumph" />
             </label>
             <label className="mt-3 grid gap-2 text-sm">
               Review
-              <textarea
-                className="min-h-28 rounded-md border bg-background p-3"
+              <Textarea
                 name="body"
                 minLength={10}
                 maxLength={2000}
                 required
+                placeholder="What stayed with you after the last page?"
+                className="min-h-28"
               />
             </label>
             <Button className="mt-4">Submit for moderation</Button>
