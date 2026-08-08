@@ -1,4 +1,4 @@
-import { BookOpen, Boxes, FolderTree, LayoutDashboard, PackageCheck, Users } from "lucide-react";
+import { BookOpen, Boxes, FolderTree, LayoutDashboard, LibraryBig, MessageSquareText, PackageCheck, Users } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -8,6 +8,8 @@ const links = [
   ["Overview", "/admin", LayoutDashboard],
   ["Catalog", "/admin/books", BookOpen],
   ["Categories", "/admin/categories", FolderTree],
+  ["Collections", "/admin/collections", LibraryBig],
+  ["Reviews", "/admin/reviews", MessageSquareText],
   ["Inventory", "/admin/inventory", Boxes],
   ["Orders", "/admin/orders", PackageCheck],
   ["Staff", "/admin/staff", Users],

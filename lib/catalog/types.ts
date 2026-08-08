@@ -18,6 +18,8 @@ export type CatalogBook = {
   stockQuantity: number;
 };
 
+export type BookCardBook = Pick<CatalogBook, "id" | "title" | "slug" | "author" | "priceCents" | "coverImageUrl" | "format" | "category">;
+
 export type CatalogFilters = {
   page: number;
   category?: string;

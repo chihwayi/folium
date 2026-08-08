@@ -17,6 +17,7 @@ export async function SiteHeader() {
           <Link href="/books" className="hover:text-primary">Books</Link>
           <Link href="/categories" className="hover:text-primary">Collections</Link>
           <Link href="/account/orders" className="hover:text-primary">Orders</Link>
+          <Link href="/account/wishlist" className="hover:text-primary">Wishlist</Link>
         </nav>
         <div className="ml-auto w-full max-w-md"><SearchBar /></div>
         <CartDrawer items={cart} />
