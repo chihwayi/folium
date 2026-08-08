@@ -13,7 +13,7 @@ Meilisearch).
 
 | # | Sprint | Owner | Status |
 |---|---|---|---|
-| 0 | [Foundation](./00-foundation.md) | Claude | Not started |
+| 0 | [Foundation](./00-foundation.md) | Claude | Done |
 | 1 | [Auth & RBAC](./01-auth-rbac.md) | Claude | Not started |
 | 2 | [Catalog & Storefront](./02-catalog-storefront.md) | Codex | Not started |
 | 3 | [Cart & Checkout](./03-cart-checkout.md) | Codex | Not started |
