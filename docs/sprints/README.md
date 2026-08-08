@@ -11,15 +11,29 @@ Meilisearch).
 
 ## Status
 
-| # | Sprint | Status |
-|---|---|---|
-| 0 | [Foundation](./00-foundation.md) | Not started |
-| 1 | [Auth & RBAC](./01-auth-rbac.md) | Not started |
-| 2 | [Catalog & Storefront](./02-catalog-storefront.md) | Not started |
-| 3 | [Cart & Checkout](./03-cart-checkout.md) | Not started |
-| 4 | [Admin Back Office](./04-admin-backoffice.md) | Not started |
-| 5 | [Editorial & UX Polish](./05-editorial-ux-polish.md) | Not started |
-| 6 | [Dashboard & Reporting](./06-dashboard-reporting.md) | Not started |
-| 7 | [Deployment & Launch](./07-deployment-launch.md) | Not started |
+| # | Sprint | Owner | Status |
+|---|---|---|---|
+| 0 | [Foundation](./00-foundation.md) | Claude | Not started |
+| 1 | [Auth & RBAC](./01-auth-rbac.md) | Claude | Not started |
+| 2 | [Catalog & Storefront](./02-catalog-storefront.md) | Codex | Not started |
+| 3 | [Cart & Checkout](./03-cart-checkout.md) | Codex | Not started |
+| 4 | [Admin Back Office](./04-admin-backoffice.md) | Codex | Not started |
+| 5 | [Editorial & UX Polish](./05-editorial-ux-polish.md) | Codex | Not started |
+| 6 | [Dashboard & Reporting](./06-dashboard-reporting.md) | Codex | Not started |
+| 7 | [Deployment & Launch](./07-deployment-launch.md) | Claude | Not started |
 
 Mark a row `In progress` when started and `Done` when its Definition of Done is met.
+
+## Working agreement
+
+- **Standards:** all agents follow [`AGENTS.md`](../../AGENTS.md) at the repo
+  root (project structure, DB/UI/backend conventions, git workflow).
+- **Claude's sprints (0, 1, 7):** foundation, auth/RBAC, and deployment/launch
+  — chosen because they set conventions everything else depends on, or touch
+  production secrets and server config directly.
+- **Codex's sprints (2–6):** feature work built on the conventions Sprint 0/1
+  establish. Each opens as a PR into `main`; Claude reviews before merge.
+- **Definition of Done is not just local:** every sprint's DoD must also pass
+  a live check on the Coolify-deployed instance on Contabo, per
+  [`../DEPLOYMENT.md`](../DEPLOYMENT.md), before the row above is marked
+  `Done`. No GitHub Actions minutes are used anywhere in this pipeline.
