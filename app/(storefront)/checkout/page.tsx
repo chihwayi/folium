@@ -72,6 +72,8 @@ export default async function CheckoutPage({
                 <BookCover
                   src={item.coverImageUrl}
                   title={item.title}
+                  author={item.author}
+                  compact
                   className="w-[52px]"
                 />
                 <div>

@@ -1,12 +1,98 @@
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import type { CatalogFilters } from "@/lib/catalog/types";
 
-export function CatalogFiltersForm({ categories, authors, values, hideCategory = false }: { categories: { name: string; slug: string }[]; authors: { author: string }[]; values: CatalogFilters; hideCategory?: boolean }) {
-  return <form className="grid gap-4 rounded-xl border bg-card p-5 shadow-sm sm:grid-cols-2 lg:block" method="get">
-    <div><label htmlFor="sort" className="text-xs font-semibold tracking-wide uppercase">Sort</label><select id="sort" name="sort" defaultValue={values.sort} className="mt-2 h-10 w-full rounded-md border bg-background px-3 text-sm"><option value="curated">Curated</option><option value="newest">Newest</option><option value="bestselling">Bestselling (curated)</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option></select></div>
-    {!hideCategory && <div className="lg:mt-5"><label htmlFor="category" className="text-xs font-semibold tracking-wide uppercase">Genre</label><select id="category" name="category" defaultValue={values.category ?? ""} className="mt-2 h-10 w-full rounded-md border bg-background px-3 text-sm"><option value="">All genres</option>{categories.map((item) => <option key={item.slug} value={item.slug}>{item.name}</option>)}</select></div>}
-    <div className="lg:mt-5"><label htmlFor="author" className="text-xs font-semibold tracking-wide uppercase">Author</label><select id="author" name="author" defaultValue={values.author ?? ""} className="mt-2 h-10 w-full rounded-md border bg-background px-3 text-sm"><option value="">All authors</option>{authors.map((item) => <option key={item.author} value={item.author}>{item.author}</option>)}</select></div>
-    <div className="lg:mt-5"><label htmlFor="format" className="text-xs font-semibold tracking-wide uppercase">Format</label><select id="format" name="format" defaultValue={values.format ?? ""} className="mt-2 h-10 w-full rounded-md border bg-background px-3 text-sm"><option value="">All formats</option><option value="paperback">Paperback</option><option value="hardcover">Hardcover</option><option value="ebook">Ebook</option></select></div>
-    <fieldset className="min-w-0 lg:mt-5"><legend className="text-xs font-semibold tracking-wide uppercase">Price (USD)</legend><div className="mt-2 flex gap-2"><input aria-label="Minimum price" name="minPrice" type="number" min="0" step="1" defaultValue={values.minPrice === undefined ? "" : values.minPrice / 100} placeholder="Min" className="h-10 w-0 min-w-0 flex-1 rounded-md border bg-background px-3 text-sm" /><input aria-label="Maximum price" name="maxPrice" type="number" min="0" step="1" defaultValue={values.maxPrice === undefined ? "" : values.maxPrice / 100} placeholder="Max" className="h-10 w-0 min-w-0 flex-1 rounded-md border bg-background px-3 text-sm" /></div></fieldset>
-    <button className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground lg:mt-6 lg:w-full">Apply filters</button>
-  </form>;
+export function CatalogFiltersForm({
+  categories,
+  authors,
+  values,
+  hideCategory = false,
+}: {
+  categories: { name: string; slug: string }[];
+  authors: { author: string }[];
+  values: CatalogFilters;
+  hideCategory?: boolean;
+}) {
+  return (
+    <form className="grid gap-4 rounded-xl border bg-card p-5 shadow-sm sm:grid-cols-2 lg:block" method="get">
+      <div>
+        <label htmlFor="sort" className="text-xs font-semibold tracking-wide uppercase">
+          Sort
+        </label>
+        <Select id="sort" name="sort" defaultValue={values.sort} className="mt-2">
+          <option value="curated">Curated</option>
+          <option value="newest">Newest</option>
+          <option value="bestselling">Bestselling (curated)</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+        </Select>
+      </div>
+      {!hideCategory && (
+        <div className="lg:mt-5">
+          <label htmlFor="category" className="text-xs font-semibold tracking-wide uppercase">
+            Genre
+          </label>
+          <Select id="category" name="category" defaultValue={values.category ?? ""} className="mt-2">
+            <option value="">All genres</option>
+            {categories.map((item) => (
+              <option key={item.slug} value={item.slug}>
+                {item.name}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
+      <div className="lg:mt-5">
+        <label htmlFor="author" className="text-xs font-semibold tracking-wide uppercase">
+          Author
+        </label>
+        <Select id="author" name="author" defaultValue={values.author ?? ""} className="mt-2">
+          <option value="">All authors</option>
+          {authors.map((item) => (
+            <option key={item.author} value={item.author}>
+              {item.author}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <div className="lg:mt-5">
+        <label htmlFor="format" className="text-xs font-semibold tracking-wide uppercase">
+          Format
+        </label>
+        <Select id="format" name="format" defaultValue={values.format ?? ""} className="mt-2">
+          <option value="">All formats</option>
+          <option value="paperback">Paperback</option>
+          <option value="hardcover">Hardcover</option>
+          <option value="ebook">Ebook</option>
+        </Select>
+      </div>
+      <fieldset className="min-w-0 lg:mt-5">
+        <legend className="text-xs font-semibold tracking-wide uppercase">Price (USD)</legend>
+        <div className="mt-2 flex gap-2">
+          <Input
+            aria-label="Minimum price"
+            name="minPrice"
+            type="number"
+            min="0"
+            step="1"
+            defaultValue={values.minPrice === undefined ? "" : values.minPrice / 100}
+            placeholder="Min"
+            className="w-0 min-w-0 flex-1"
+          />
+          <Input
+            aria-label="Maximum price"
+            name="maxPrice"
+            type="number"
+            min="0"
+            step="1"
+            defaultValue={values.maxPrice === undefined ? "" : values.maxPrice / 100}
+            placeholder="Max"
+            className="w-0 min-w-0 flex-1"
+          />
+        </div>
+      </fieldset>
+      <Button className="lg:mt-6 lg:w-full">Apply filters</Button>
+    </form>
+  );
 }

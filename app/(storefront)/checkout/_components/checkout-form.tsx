@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { LockKeyhole } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { createCheckoutSession } from "../actions";
 
 export function CheckoutForm() {
@@ -14,29 +15,29 @@ export function CheckoutForm() {
       <label htmlFor="email" className="text-sm font-medium">
         Email address
       </label>
-      <input
+      <Input
         id="email"
         name="email"
         type="email"
         required
         autoComplete="email"
         placeholder="reader@example.com"
-        className="mt-2 h-11 w-full rounded-md border bg-background px-3 outline-none focus:ring-2 focus:ring-ring"
+        className="mt-2"
       />
       <label htmlFor="promoCode" className="mt-5 block text-sm font-medium">
         Promo code{" "}
         <span className="font-normal text-muted-foreground">(optional)</span>
       </label>
-      <input
+      <Input
         id="promoCode"
         name="promoCode"
         autoComplete="off"
         maxLength={32}
         placeholder="READMORE"
-        className="mt-2 h-11 w-full rounded-md border bg-background px-3 uppercase outline-none focus:ring-2 focus:ring-ring"
+        className="mt-2 uppercase placeholder:normal-case"
       />
       {state?.error && (
-        <p role="alert" className="mt-3 text-sm text-destructive">
+        <p role="alert" className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           {state.error}
         </p>
       )}

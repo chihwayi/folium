@@ -65,7 +65,7 @@ export function SearchBar() {
         }} onKeyDown={onKeyDown}
         onFocus={() => hits.length > 0 && setOpen(true)} placeholder="Search title, author, ISBN…"
         role="combobox" aria-label="Search books" aria-expanded={open} aria-controls="search-results" aria-activedescendant={active >= 0 ? `search-hit-${active}` : undefined}
-        className="h-10 w-full rounded-full border border-input bg-card pr-4 pl-10 text-sm shadow-sm outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+        className="h-10 w-full rounded-full border border-input bg-card pr-4 pl-10 text-sm shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)] outline-none placeholder:text-muted-foreground/70 focus:border-accent focus:ring-[3px] focus:ring-accent/35"
       />
       {open && (
         <div id="search-results" role="listbox" className="absolute top-12 right-0 left-0 overflow-hidden rounded-lg border bg-popover shadow-xl">
