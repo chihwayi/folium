@@ -20,7 +20,7 @@ Meilisearch).
 | 4 | [Admin Back Office](./04-admin-backoffice.md) | Codex | Reviewed — live-verified |
 | 5 | [Editorial & UX Polish](./05-editorial-ux-polish.md) | Codex | Reviewed |
 | 6 | [Dashboard & Reporting](./06-dashboard-reporting.md) | Codex | Reviewed — Stripe test-mode promo pending |
-| 7 | [Deployment & Launch](./07-deployment-launch.md) | Claude | Not started |
+| 7 | [Deployment & Launch](./07-deployment-launch.md) | Claude | In progress — live at https://qt87mhkyh9neewdlv1lpszek.31.220.84.245.sslip.io, blocked on Stripe/Resend/R2/Sentry keys |
 
 Mark a row `In progress` when started and `Done` when its Definition of Done is met.
 
