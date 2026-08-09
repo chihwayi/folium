@@ -1,9 +1,9 @@
 # Folium — Agent Standards
 
 This file is the shared contract for every coding agent working in this repo
-(Codex, Claude, or anyone else). Read it before writing code. The sprint plan
-lives in [`docs/sprints/README.md`](./docs/sprints/README.md) — that's *what*
-to build, this file is *how*.
+(Codex, Claude, or anyone else). Read it before writing code — this is *how*
+things are built here. See [`README.md`](./README.md) for what the project
+is and how to run it.
 
 ## Stack
 Next.js 15 (App Router) + TypeScript, Tailwind + shadcn/ui + Framer Motion,
@@ -11,33 +11,21 @@ PostgreSQL + Drizzle ORM, Auth.js (RBAC), Meilisearch, Cloudflare R2, Stripe,
 Resend. Single app, deployed on Coolify (self-hosted, Contabo VPS) as 3
 services: app + Postgres + Meilisearch.
 
-## Sprint ownership
-
-| # | Sprint | Owner | Why |
-|---|---|---|---|
-| 0 | Foundation | Claude | Sets the schema/project conventions everything else follows |
-| 1 | Auth & RBAC | Claude | Security-critical; every later sprint gates on its role model |
-| 2 | Catalog & Storefront | Codex | Feature build on established patterns |
-| 3 | Cart & Checkout | Codex | Feature build on established patterns |
-| 4 | Admin Back Office | Codex | Feature build on established patterns |
-| 5 | Editorial & UX Polish | Codex | Feature build on established patterns |
-| 6 | Dashboard & Reporting | Codex | Feature build on established patterns |
-| 7 | Deployment & Launch | Claude | Touches production secrets, live payment keys, server config |
-
-Claude reviews every Codex PR before merge (correctness, security, adherence
+Claude reviews every PR before merge (correctness, security, adherence
 to this file) — see `.claude/` skills `code-review` / `security-review`.
-Codex should open a PR rather than pushing straight to `main`.
+Open a PR rather than pushing straight to `main`.
 
 ## Non-negotiables
 
-- Never read, print, or commit `server-properties.txt`, `.env`, or `.env.*`
-  (all gitignored — keep it that way). Add new required vars to `.env.example`
-  only, with a placeholder value.
+- Never read, print, or commit `server-properties.txt`,
+  `deployment-credentials.txt`, `.env`, or `.env.*` (all gitignored — keep it
+  that way). Add new required vars to `.env.example` only, with a placeholder
+  value.
 - Never force-push, never rewrite history on `main`.
-- Never mark a sprint task done, or a `Definition of Done` item met, without
-  the live check described in [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md).
+- Never mark a feature or `Definition of Done` item complete without the
+  live check described in [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md).
 - No GitHub Actions minutes. This repo has no `.github/workflows` and should
-  stay that way — see Deployment below for why.
+  stay that way — see [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md) for why.
 
 ## Project structure
 
@@ -79,16 +67,16 @@ Codex should open a PR rather than pushing straight to `main`.
 
 - Tailwind + shadcn/ui only — no ad hoc CSS files, no competing component
   libraries.
-- Design tokens (color, type scale, radius) are set once in Sprint 0; reuse
+- Design tokens (color, type scale, radius) live in `app/globals.css`; reuse
   them, don't invent new colors/spacing per component.
-- The bar is "premium bookstore," not "generic admin template" — see Sprint 5
-  for the editorial polish pass, but every component built earlier should
-  still take loading/empty/error states seriously the first time, not as a
-  later patch.
+- The bar is "premium bookstore," not "generic admin template" for
+  customer-facing storefront pages — every component should take
+  loading/empty/error states seriously the first time, not as a later patch.
+  The admin back office can be plainer/more utilitarian.
 - Framer Motion for intentional motion (page transitions, add-to-cart,
   hover), not decoration for its own sake.
 
-## Auth & RBAC (once Sprint 1 lands)
+## Auth & RBAC
 
 - Roles: `customer`, `staff`, `owner`. Never trust a client-supplied role —
   always re-check from the session/DB on the server.
@@ -98,10 +86,10 @@ Codex should open a PR rather than pushing straight to `main`.
 
 ## Git workflow
 
-- Branch per sprint/feature: `sprint-2-catalog`, `sprint-3-checkout`, etc.
+- Branch per feature.
 - Commit messages: imperative, explain why over what.
 - Open a PR into `main`; Claude reviews before merge.
-- `main` is always deployable — see Deployment.
+- `main` is always deployable — see [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md).
 
 ## Environment variables
 
