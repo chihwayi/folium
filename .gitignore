@@ -1,5 +1,6 @@
 # Secrets / server access — never commit
 server-properties.txt
+deployment-credentials.txt
 .env
 .env.*
 !.env.example
