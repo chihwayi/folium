@@ -163,11 +163,13 @@ export async function importBooks(formData: FormData) {
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0 || file.size > 2_000_000)
     throw new Error("Choose a CSV file smaller than 2 MB");
-  const parsed = z
-    .array(csvRowSchema)
-    .min(1)
-    .max(1000)
-    .parse(parseCsv(await file.text()));
+  // Strip comment lines (leading #) so the downloadable template's
+  // explanatory notes don't have to be manually deleted before importing.
+  const text = (await file.text())
+    .split(/\r\n|\n/)
+    .filter((line) => !line.trimStart().startsWith("#"))
+    .join("\n");
+  const parsed = z.array(csvRowSchema).min(1).max(1000).parse(parseCsv(text));
   await db.transaction(async (tx) => {
     for (const input of parsed) {
       const [book] = await tx
