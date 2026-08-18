@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { signOutAction } from "@/app/(auth)/actions";
 import { requireAdmin } from "@/lib/auth/admin";
 
 const links = [
@@ -41,9 +42,19 @@ export default async function AdminLayout({
           <Link href="/admin" className="font-serif text-2xl">
             Folium Admin
           </Link>
-          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            {actor.role}
-          </p>
+          <div className="flex items-center gap-4 text-sm">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              {actor.role}
+            </p>
+            <Link href="/" className="text-muted-foreground hover:text-primary">
+              View store
+            </Link>
+            <form action={signOutAction}>
+              <button type="submit" className="text-muted-foreground hover:text-primary">
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
       </header>
       <div className="mx-auto grid max-w-7xl md:grid-cols-[210px_1fr]">
